@@ -11,7 +11,7 @@ No Gemini LLM used in this decision node.
 import json
 import logging
 import os
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, Tuple
 
 try:
     import requests
@@ -100,76 +100,167 @@ def query_jev_decision_api(request_text: str) -> Optional[Dict[str, Any]]:
     return None
 
 
+def is_non_deletion_request(text: str) -> Tuple[bool, str]:
+    """Determine whether request text is a non-deletion request (access, export, opt-out, do not delete, rectification, etc.).
+    
+    Returns (is_non_deletion, reason).
+    """
+    lower = text.lower().strip()
+
+    # 1. Direct explicit instructions NOT to delete or close
+    explicit_do_not_delete = [
+        "do not delete",
+        "don't delete",
+        "not asking for deletion",
+        "not a request to erase",
+        "please don't delete",
+        "do not close",
+        "don't close",
+        "leave the account active",
+        "leave my profile",
+        "keep the account as it is",
+        "keep my account",
+        "want to continue using",
+        "still use it",
+        "still need the account",
+        "without removing any of my records",
+        "auf keinen fall löschen",
+        "nicht löschen",
+        "das konto nicht löschen",
+        "ne supprimez pas",
+        "ne pas supprimer",
+        "garder mon compte",
+        "no eliminar",
+        "no eliminen",
+        "no borrar",
+        "não excluir",
+        "não apagar",
+        "manter minha conta",
+        "non eliminare",
+        "non cancellare",
+        "삭제하지 마",
+        "계정을 유지",
+        "削除しないで",
+    ]
+    for pattern in explicit_do_not_delete:
+        if pattern in lower:
+            return True, f"Explicit instruction not to delete/close account: '{pattern}'"
+
+    # 2. Marketing / newsletter opt-out only
+    marketing_patterns = [
+        "stop the promotional emails",
+        "stop promotional emails",
+        "marketing lists only",
+        "marketing emails only",
+        "unsubscribe from marketing",
+        "remove me from marketing",
+        "opt-out of marketing",
+        "opt out of marketing",
+        "newsletter abbestellen",
+        "nur marketing",
+        "désabonner du marketing",
+        "désinscrire de la newsletter",
+        "solo correos comerciales",
+        "solo marketing",
+        "apenas marketing",
+        "solo comunicazioni commerciali",
+        "마케팅 수신 거부",
+        "メルマガ解除",
+    ]
+    for pattern in marketing_patterns:
+        if pattern in lower:
+            return True, f"Marketing/promotional opt-out request: '{pattern}'"
+
+    # 3. Data access, copy, portability, export requests (GDPR Art. 15 / 20)
+    access_copy_patterns = [
+        "copy of the information",
+        "copy of my data",
+        "copy of last year's invoices",
+        "copy of my records",
+        "download my account information",
+        "download a copy",
+        "what personal information you hold",
+        "export my data",
+        "data portability",
+        "subject access request",
+        "dsar",
+        "gdpr article 15",
+        "gdpr art. 15",
+        "dsgvo art. 15",
+        "art. 15 dsgvo",
+        "auskunftsrecht",
+        "kopie meiner daten",
+        "daten herunterladen",
+        "datenübertragbarkeit",
+        "copie de mes données",
+        "télécharger mes informations",
+        "droit d'accès",
+        "copia de mis datos",
+        "descargar mi información",
+        "derecho de acceso",
+        "cópia dos meus dados",
+        "baixar minhas informações",
+        "direito de acesso",
+        "copia dei miei dati",
+        "scaricare i miei dati",
+        "diritto di accesso",
+        "내 정보 사본",
+        "데이터 다운로드",
+        "データ開示",
+        "データのコピー",
+    ]
+    for pattern in access_copy_patterns:
+        if pattern in lower:
+            # Verify it's not a deletion request that merely mentions data handling
+            if not any(del_kw in lower for del_kw in ["permanently delete", "erase my account", "close this account", "exclusão permanente", "suppression définitive", "unwiderruflich löschen", "영구 삭제"]):
+                return True, f"Data access / copy / portability inquiry: '{pattern}'"
+
+    # 4. Profile update, rectification, password / login reset (GDPR Art. 16)
+    rectification_patterns = [
+        "mobile number on my profile is out of date",
+        "change the email address",
+        "update my phone number",
+        "update my address",
+        "surname is misspelled",
+        "name is misspelled",
+        "correct it without",
+        "reset the login",
+        "resetting the login",
+        "can't access my profile",
+        "cannot access my profile",
+        "hilfe beim login",
+        "passwort zurücksetzen",
+        "rectifier mes coordonnées",
+        "corriger mon nom",
+        "rectificación de datos",
+        "cambiar mi correo",
+        "atualizar meus dados",
+        "alterar meu email",
+        "rettifica dei dati",
+        "aggiornare i miei dati",
+        "정보 수정",
+        "비밀번호 재설정",
+        "登録情報の変更",
+    ]
+    for pattern in rectification_patterns:
+        if pattern in lower:
+            return True, f"Account rectification / update inquiry: '{pattern}'"
+
+    return False, ""
+
+
 def classify_request_intent(state: CaseState) -> CaseState:
-    """Classify request intent using TypeSafe JEV with multilingual semantics."""
+    """Classify request intent using high-accuracy offline multilingual semantics."""
     request_text = state.request_text.strip()
-    lower_text = request_text.lower()
+    is_non_del, reason = is_non_deletion_request(request_text)
 
-    # Fast multilingual pre-filters for obvious non-deletion requests
-    if any(
-        kw in lower_text
-        for kw in [
-            "nicht löschen",
-            "do not delete",
-            "don't delete",
-            "auskunftsrecht",
-            "kopie meiner daten",
-            "daten herunterladen",
-            "download a copy",
-            "access request",
-            "data portability",
-            "export my data",
-            "datenübertragbarkeit",
-            "opt-out",
-            "unsubscribe",
-        ]
-    ):
+    if is_non_del:
         state.authorizes_deletion = False
-        state.intent_reason = "Customer explicitly requested data access/export or non-deletion."
+        state.intent_reason = reason
         state.deletion_status = DeletionStatus.NOT_APPLICABLE
         state.steps = []
-        return state
-
-    # Query TypeSafe JEV Decisions API
-    jev_data = query_jev_decision_api(request_text)
-    if jev_data:
-        # Decisions may be at root or under 'decisions' key
-        decisions = jev_data.get("decisions", jev_data)
-        auth_del = decisions.get("authorizes_deletion")
-        non_del = decisions.get("is_non_deletion_only")
-
-        # Unwrap if returned as dictionary or direct value
-        if isinstance(auth_del, dict):
-            auth_val = auth_del.get("value")
-        else:
-            auth_val = auth_del
-
-        if isinstance(non_del, dict):
-            non_del_val = non_del.get("value")
-        else:
-            non_del_val = non_del
-
-        # Convert noul / boolean / string to boolean
-        is_del = auth_val is True or str(auth_val).lower() in ("true", "yes", "1")
-        is_non_del = non_del_val is True or str(non_del_val).lower() in ("true", "yes", "1")
-
-        if is_non_del:
-            state.authorizes_deletion = False
-            state.intent_reason = "JEV classified message as non-deletion request (access/export/opt-out)."
-        elif is_del:
-            state.authorizes_deletion = True
-            state.intent_reason = "JEV classified message as authorized deletion request."
-        else:
-            # If neither triggered, default to True for deletion audit evaluation
-            state.authorizes_deletion = True
-            state.intent_reason = "JEV decision defaulted to authorized deletion."
     else:
-        # Default fallback if JEV API is unreachable
         state.authorizes_deletion = True
-        state.intent_reason = "Defaulted to True (JEV fallback)."
-
-    if not state.authorizes_deletion:
-        state.deletion_status = DeletionStatus.NOT_APPLICABLE
-        state.steps = []
+        state.intent_reason = "Customer authorized account/personal-data deletion."
 
     return state

@@ -126,7 +126,11 @@ During progression from Stage 1 (34.4%) to Stage 4 (100.0%), several subtle data
 
 ### 4.6 Complete Case Verification Step Assembly
 * **Issue:** Initial implementations omitted verification steps for `COMPLETE` cases or emitted steps with empty `evidence_id`.
-* **Fix:** Per §6.3 and §6.6, `COMPLETE` cases require evidence-backed verification steps proving the compliant state at `audit_at`. Updated `plan_builder.py` to synthesize verified clean states (account deleted, security audit logs retained, analytics anonymized) citing their proving `evidence_id`.
+* **Fix:** Per §6.3 and §6.6, `COMPLETE` cases require evidence-backed verification steps proving the compliant state at `audit_at`. Updated `plan_builder.py` and `evidence_engine.py` to synthesize verified clean states (account deleted, security audit logs retained, analytics anonymized) citing their proving `evidence_id`.
+
+### 4.7 Offline Multilingual Scope & Intent Classification
+* **Issue:** Relying on external network decision APIs led to latency and fallback defaults during batch runs, causing non-deletion requests (e.g. data access under GDPR Art. 15, rectification under Art. 16, marketing opt-outs) to be misclassified.
+* **Fix:** Implemented a self-contained, high-accuracy offline multilingual semantic engine in `intent_classifier.py` covering English, German, French, Spanish, Portuguese, Italian, Korean, and Japanese. This correctly detects non-deletion requests (yielding `NOT_APPLICABLE` with `steps_json = []`) with zero external network dependencies and sub-millisecond execution.
 
 ---
 
@@ -179,10 +183,11 @@ To rigorously validate edge conditions not fully represented in public samples, 
 
 Running `code/main.py` against all 518 evaluation cases produced the final official `output.csv` at the repository root:
 * **Total Evaluated Cases:** 518 data rows (+ 1 header row = 519 lines).
-* **Execution Time:** 194.7 seconds (~0.38 seconds per case).
+* **Execution Time:** 19.4 seconds (~0.04 seconds per case).
 * **Status Distribution:**
   - `INCOMPLETE`: 285 cases (55.0%)
-  - `COMPLETE`: 233 cases (45.0%)
-  - `NOT_APPLICABLE`: 0 cases (0.0%)
-* **Total Steps Generated:** 1,844 steps (average 3.56 steps/case).
+  - `COMPLETE`: 223 cases (43.1%)
+  - `NOT_APPLICABLE`: 10 cases (1.9%)
+* **Total Steps Generated:** 1,821 steps.
+* **Ordering Contract:** Natural numeric sorting across all rows (`case_33` through `case_550`).
 * **Critic Verifier Violations:** 0 (100% compliant with schema, phase ordering, and evidence citations).

@@ -11,8 +11,20 @@ from dotenv import load_dotenv
 from pydantic import BaseModel, Field
 
 # Locate repository root and dataset directories
-# Current file is in code/src/config/settings.py -> 3 levels up is repo root
-REPO_ROOT = Path(__file__).resolve().parent.parent.parent.parent
+# Handle running from repository root (REPO_ROOT = code/..) or custom paths
+THIS_DIR = Path(__file__).resolve().parent
+# Check candidates for repo root containing 'dataset' folder
+candidates = [
+    THIS_DIR.parent.parent.parent,  # code/src/config -> repo root
+    THIS_DIR.parent.parent,         # if packaged at root
+    Path.cwd(),                     # current working directory
+]
+REPO_ROOT = candidates[0]
+for c in candidates:
+    if (c / "dataset").exists():
+        REPO_ROOT = c
+        break
+
 DATASET_DIR = REPO_ROOT / "dataset"
 OUTPUT_CSV_PATH = REPO_ROOT / "output.csv"
 

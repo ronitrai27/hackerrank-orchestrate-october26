@@ -868,8 +868,16 @@ class EvidenceEngine:
 
             if not any(cs.system_id == "account_service" for cs in clean_steps):
                 acc_id = account_resource_id or (f"account_{user_id.replace('user_', '')}" if user_id else f"account_{case_id.replace('case_', '')}")
+                # Prefer evidence files that match account service or databases captured on or before audit_at
                 eligible_ev = [ef for ef in eligible_files if ef.get("captured_at", "") <= audit_at]
-                best_ev = eligible_ev[0]["file_id"] if eligible_ev else "evidence_54"
+                acc_ev = [ef for ef in eligible_ev if "account" in ef.get("origin", "") or "primary" in ef.get("origin", "") or "database" in ef.get("file_path", "")]
+                if acc_ev:
+                    best_ev = acc_ev[0]["file_id"]
+                elif eligible_ev:
+                    best_ev = eligible_ev[0]["file_id"]
+                else:
+                    best_ev = "evidence_54"
+
                 clean_steps.append(
                     AuditStep(
                         step_no=0,

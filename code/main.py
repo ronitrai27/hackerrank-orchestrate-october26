@@ -88,8 +88,15 @@ def run_pipeline(
                 "steps_json": "[]",
             })
 
-    # Sort results strictly by case_id as required by the challenge
-    results.sort(key=lambda r: r["case_id"])
+    # Sort results strictly by case_id (numerical key) as required by the challenge
+    def case_sort_key(r: dict) -> tuple:
+        cid = r.get("case_id", "")
+        parts = cid.split("_")
+        if len(parts) >= 2 and parts[1].isdigit():
+            return (parts[0], int(parts[1]))
+        return (cid, 0)
+
+    results.sort(key=case_sort_key)
 
     # Write output.csv with exact header
     out_file.parent.mkdir(parents=True, exist_ok=True)
