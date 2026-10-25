@@ -46,11 +46,12 @@ class Settings(BaseModel):
         default_factory=lambda: os.getenv("OPENAI_BASE_URL")
     )
     typesafe_api_key: Optional[str] = Field(
-        default_factory=lambda: os.getenv("TYPESAFE_API_KEY") or os.getenv("JEV_API_KEY")
+        default_factory=lambda: os.getenv("OPENROUTER_JEV") or os.getenv("TYPESAFE_API_KEY") or os.getenv("JEV_API_KEY")
     )
     typesafe_base_url: Optional[str] = Field(
-        default_factory=lambda: os.getenv("TYPESAFE_BASE_URL")
+        default_factory=lambda: os.getenv("TYPESAFE_BASE_URL", "https://openrouter.ai/api/alpha/decisions")
     )
+
 
     # Langfuse Observability (Optional)
     langfuse_public_key: Optional[str] = Field(

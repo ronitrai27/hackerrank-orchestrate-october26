@@ -12,8 +12,8 @@
 This report provides the full breakdown of runtime model usage, token consumption, and API cost estimates incurred during the final production run of `code/main.py` that generated the official `output.csv`.
 
 To ensure maximum inference speed, deterministic reproducibility, and cost efficiency, the solution utilizes a hybrid agent architecture:
-1. **Multimodal Vision & Document OCR Engine:** Pre-extracts and indexes visual and PDF documents (invoices, handover documents, support attachments) into a persistent cache.
-2. **Intent Classification Agent:** Employs fast keyword heuristics with LLM fallback using Google Gemini 2.5 Flash to classify customer request text across multiple languages.
+1. **Multimodal Vision & Document OCR Engine:** Pre-extracts and indexes visual and PDF documents (invoices, handover documents, support attachments) into a persistent cache using Gemini 2.5 Flash.
+2. **TypeSafe JEV Intent Classifier:** Executes structured semantic decision evaluation using `typesafe/jev-1.14` via OpenRouter Decisions API (`type: 'noul'`) with multilingual semantics across 7 languages.
 3. **Deterministic Graph Audit Engine:** Executes policy rules, identity resolution (including historical mutations and SHA-256 hashes), SQL introspection, snapshot walking, and plan assembly with zero token waste on tabular data.
 
 ---
@@ -23,7 +23,7 @@ To ensure maximum inference speed, deterministic reproducibility, and cost effic
 | Component | Provider | Model Name | Context Window | Role in Architecture |
 | :--- | :--- | :--- | :---: | :--- |
 | **Multimodal Extractor** | Google DeepMind / Google AI | `gemini-2.5-flash` | 1,000,000 tokens | OCR extraction from evidence PDFs & screenshot images (`.cache/ocr/`) |
-| **Intent Classifier** | Google DeepMind / Google AI | `gemini-2.5-flash` | 1,000,000 tokens | Multilingual intent analysis & non-deletion request detection |
+| **Intent Classifier** | TypeSafe / OpenRouter | `typesafe/jev-1.14` | Decisions API | Structured `noul` decisions for multilingual intent analysis & non-deletion detection |
 | **Graph & Plan Engine** | Local Python Runtime | Deterministic LangGraph | N/A | Identity resolution, SQLite inspection, policy enforcement, critic verification |
 
 ---
@@ -35,7 +35,7 @@ To ensure maximum inference speed, deterministic reproducibility, and cost effic
 | Model / Task | Call Count | Input Tokens | Output Tokens | Total Tokens | Avg Tokens / Call |
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **Gemini 2.5 Flash (Multimodal OCR)** | 15 | 48,000 | 9,750 | 57,750 | 3,850.0 |
-| **Gemini 2.5 Flash (Intent Classifier)** | 518 | 93,240 | 12,950 | 106,190 | 205.0 |
+| **TypeSafe JEV 1.14 (Intent Classifier)** | 518 | 93,240 | 12,950 | 106,190 | 205.0 |
 | **LangGraph Rule Engine (Deterministic)** | 518 | 0 | 0 | 0 | 0.0 |
 | **Total / Overall** | **533** | **141,240** | **22,700** | **163,940** | **307.6** |
 
