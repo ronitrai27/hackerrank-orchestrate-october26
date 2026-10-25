@@ -355,6 +355,10 @@ Actions:
 
 Context:
 tool=Antigravity IDE
+model=gemini-3-8-flash
+branch=main
+repo_root=R:\hackerrank
+worktree=main
 parent_agent=none
 
 ## 2026-10-25T05:05:00Z SESSION START

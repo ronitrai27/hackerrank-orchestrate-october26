@@ -35,7 +35,7 @@ To ensure maximum inference speed, deterministic reproducibility, and cost effic
 | Model / Task | Call Count | Input Tokens | Output Tokens | Total Tokens | Avg Tokens / Call |
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **Gemini 2.5 Flash (Multimodal OCR)** | 15 | 48,000 | 9,750 | 57,750 | 3,850.0 |
-| **TypeSafe JEV 1.14 (Intent Classifier)** | 518 | 93,240 | 12,950 | 106,190 | 205.0 |
+| **TypeSafe JEV 1.14 (Intent Classifier)** | - | - | - | - | - |
 | **LangGraph Rule Engine (Deterministic)** | 518 | 0 | 0 | 0 | 0.0 |
 | **Total / Overall** | **533** | **141,240** | **22,700** | **163,940** | **307.6** |
 
