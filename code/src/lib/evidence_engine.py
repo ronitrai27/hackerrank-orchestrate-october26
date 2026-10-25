@@ -763,7 +763,7 @@ class EvidenceEngine:
                         extracted_text = ocr_extractor.extract_evidence_file(file_path)
 
                     if extracted_text and self._matches_user(extracted_text, user_id, all_emails, email_hashes):
-                        m_res = re.search(r"\b(support_\w+|account_\w+|search_\w+|export_\w+|analytics_\w+|tombstone_\w+|audit_record_\w+)\b", extracted_text)
+                        m_res = re.search(r"\b(support_\d+|account_\d+|search_\d+|export_\d+|analytics_\d+|tombstone_\d+|audit_record_\d+|data_flow_\d+|backup_\d+)\b", extracted_text)
                         res_id = m_res.group(1) if m_res else ""
                         orig_sys = self._normalize_service_id(ef.get("origin", ""), res_id)
                         if res_id and res_id not in processed_resources:

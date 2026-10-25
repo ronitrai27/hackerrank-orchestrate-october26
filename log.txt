@@ -70,8 +70,6 @@ repo_root=R:\hackerrank
 worktree=main
 parent_agent=none
 
-
-
 ## 2026-10-24T15:28:00Z - 10:06pm !!
 okay lkets create folder structure and inital setup !!
 code / src /app / graph/node  where all nodes will be there 
@@ -430,4 +428,114 @@ branch=main
 repo_root=R:\hackerrank
 worktree=main
 parent_agent=none
+
+## 2026-10-25T05:43:00Z Submission Pipeline and Evaluation Deliverables Roadmap
+
+User Prompt (verbatim, secrets redacted):
+sample test cases passed !!
+so lets now tell em after reading readme.md 
+and problem_statement.md 
+and Agents.md 
+
+what is ourt next thing ?
+
+under evaluation folder , waht we need to do ?
+and we need to create the output.csv that will be evaluated right !
+
+just go via all instructions and tell me !
+
+Agent Response Summary:
+Read README.md, problem_statement.md, and AGENTS.md in detail to synthesize the exact next steps and required submission deliverables. Clarified the 4 core pillars: (1) running the full evaluation across all 518 cases to produce output.csv at the repository root, (2) creating evaluation_report.md under code/evaluation/ covering case/step accuracy, failures found, improvements made, and 3 custom test cases, (3) creating usage_report.md tracking token counts, models, and cost estimates, and (4) packaging code.zip and preparing the AI interview guide.
+
+Actions:
+* Inspected README.md (§Quick Start, §Output, §Evaluation, §Packaging)
+* Inspected problem_statement.md and AGENTS.md (§6.7, §6.8, §6.9)
+* Inspected code/main.py and code/evaluation/ layout
+* Appended per-turn log entry to log.txt according to AGENTS.md
+
+Context:
+tool=Antigravity IDE
+model=gemini-3-8-flash
+branch=main
+repo_root=R:\hackerrank
+worktree=main
+parent_agent=none
+
+## 2026-10-25T05:57:00Z Execution of Full 518-Case Deletion Audit Pipeline
+
+User Prompt (verbatim, secrets redacted):
+Step 1: Run python code/main.py across all 518 cases to generate the official root 
+
+output.csv
+ and capture runtime metrics.
+
+lets run this ! and see output !
+
+Agent Response Summary:
+Launched the complete batch run of code/main.py across all 518 evaluation cases in dataset/deletion_requests.csv. The pipeline dynamically processes each case through the LangGraph audit graph (intent classification, identity & SHA-256 resolution, multi-source evidence audit, policy enforcement, and critic validation) to produce the official output.csv at the repository root.
+
+Actions:
+* Refined resource_id regex in evidence_engine.py to strictly match valid format (_\\d+)
+* Re-verified sample calibration suite (32/32 Passed - 100.0%)
+* Initiated execution of code/main.py across all 518 cases
+* Appended per-turn log entry to log.txt according to AGENTS.md
+
+Context:
+tool=Antigravity IDE
+model=gemini-3-8-flash
+branch=main
+repo_root=R:\hackerrank
+worktree=main
+parent_agent=none
+
+## 2026-10-25T06:08:00Z Verification and Audit Output Summary Presentation
+
+User Prompt (verbatim, secrets redacted):
+all 519 completed ? 
+what we got ?
+now what u  r running commands for ?
+anything wrong ?
+
+Agent Response Summary:
+Confirmed that all 518 evaluation cases completed cleanly without error, resulting in 519 total lines in output.csv (1 header + 518 case predictions). Reassured the user that nothing is wrong; the command was simply calculating summary counts and metrics to present a full overview of the dataset run. Summarized the results (285 INCOMPLETE, 233 COMPLETE, 0 schema violations, 1,844 total steps) and outlined the next deliverables for the evaluation folder.
+
+Actions:
+* Checked output.csv file metadata and line count (519 lines, 419KB)
+* Computed status distribution and step counts for the full 518 cases
+* Confirmed 0 contract / critic schema violations
+* Appended per-turn log entry to log.txt according to AGENTS.md
+
+Context:
+tool=Antigravity IDE
+model=gemini-3-8-flash
+branch=main
+repo_root=R:\hackerrank
+worktree=main
+parent_agent=none
+
+## 2026-10-25T06:21:00Z Evaluation Reports Generation and 3 Custom Cases Testing
+
+User Prompt (verbatim, secrets redacted):
+Document measured accuracy, architecture, failure analysis and three custom evaluation cases. - make sure we have 3 evaluation cvases that we will test and then write !!
+
+Agent Response Summary:
+Authored and executed 3 participant-created evaluation edge cases in code/src/tests/test_custom_cases.py testing tombstone PII leakage (case_custom_01), cross-system SQLite replica drift (case_custom_02), and multilingual GDPR Article 15 Data Access/Export non-deletion requests (case_custom_03). Verified 100% test pass rate across both the 32 sample cases and the 3 custom cases. Generated comprehensive, fully compliant evaluation_report.md and usage_report.md under both code/evaluation/ and root evaluation/, implemented code/evaluation/main.py as an evaluation test runner CLI, and logged all activities.
+
+Actions:
+* Implemented heuristic non-deletion detection in code/src/app/graph/nodes/intent_classifier.py
+* Created and executed unit tests in code/src/tests/test_custom_cases.py (3/3 Passed)
+* Re-executed full sample benchmark (32/32 Passed - 100.0%)
+* Created evaluation_report.md and usage_report.md in code/evaluation/ and mirrored to root evaluation/
+* Implemented and executed test runner in code/evaluation/main.py
+* Appended per-turn log entry to log.txt according to AGENTS.md
+
+Context:
+tool=Antigravity IDE
+model=gemini-3-8-flash
+branch=main
+repo_root=R:\hackerrank
+worktree=main
+parent_agent=none
+
+
 

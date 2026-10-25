@@ -35,6 +35,33 @@ def classify_request_intent(state: CaseState) -> CaseState:
 
     # Fast heuristics for obvious deletion keywords
     lower_text = request_text.lower()
+
+    # Fast heuristics for non-deletion requests (access, export, portability, do not delete)
+    if any(
+        kw in lower_text
+        for kw in [
+            "nicht löschen",
+            "do not delete",
+            "don't delete",
+            "auskunftsrecht",
+            "kopie meiner daten",
+            "daten herunterladen",
+            "download a copy",
+            "access request",
+            "data portability",
+            "export my data",
+            "datenübertragbarkeit",
+            "opt-out",
+            "unsubscribe",
+        ]
+    ):
+        state.authorizes_deletion = False
+        state.intent_reason = "Customer explicitly requested data access/export or non-deletion."
+        state.deletion_status = DeletionStatus.NOT_APPLICABLE
+        state.steps = []
+        return state
+
+    # Fast heuristics for obvious deletion keywords
     if any(
         kw in lower_text
         for kw in [
