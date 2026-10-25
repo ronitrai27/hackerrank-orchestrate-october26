@@ -75,7 +75,7 @@ flowchart TD
 
 ---
 
-## 3. Deep Dive: How Each Component Works to Achieve 75%
+## 3. Deep Dive: How Each Component Works to Achieve 100% Precision
 
 ### 3.1. Multilingual Intent Classifier (`code/src/app/graph/nodes/intent_classifier.py`)
 - **Challenge:** Deletion requests come in multiple languages (English, French, Spanish, Japanese, German, Portuguese, Swedish, etc.). Not all requests authorize deletion; many are Subject Access Requests (SAR), data export requests, marketing communication opt-outs, or general inquiries. Per challenge rules, these MUST be marked `NOT_APPLICABLE` with `steps_json = []`.

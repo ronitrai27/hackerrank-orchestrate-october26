@@ -537,5 +537,58 @@ repo_root=R:\hackerrank
 worktree=main
 parent_agent=none
 
+## 2026-10-25T06:25:00Z System Accuracy, Evaluation Metrics, and Architectural Practices Breakdown
+
+User Prompt (verbatim, secrets redacted):
+Now before moving - let us breakdown things !!
+1. what is our accuracy on which dataset ?
+2. for evalutation metrices u take and run and got what ?
+3. architecture flow and explanation  and also in decision.md - its correct ?
+4. 5 important architecture practises we did right here and why ?
+
+Agent Response Summary:
+Provided a comprehensive architectural and performance breakdown answering all four core questions: (1) accuracy achieved (100% on 32-sample ground-truth dataset and 3/3 custom edge cases; 518 cases evaluated with 0 contract violations), (2) exact evaluation metrics captured across case status, step fields, phase sequences, and token costs, (3) validation and alignment of Decision.md with the current LangGraph StateGraph engine, and (4) the five critical architectural practices implemented (Strict Temporal Cutoff, Declarative LangGraph Workflow, Multi-Hop Cryptographic Identity Graph, Deterministic Schema-Aware Evidence Extraction, and Zero-Hardcoding Dynamic Invariant Enforcement).
+
+Actions:
+* Verified and updated Decision.md section 3 title to reflect 100% precision
+* Verified evaluation metrics and test execution logs
+* Appended per-turn log entry to log.txt according to AGENTS.md
+
+Context:
+tool=Antigravity IDE
+model=gemini-3-8-flash
+branch=main
+repo_root=R:\hackerrank
+worktree=main
+parent_agent=none
+
+## 2026-10-25T06:31:00Z AI Interview Grounding: Architecture, Determinism, Reliability, Decisions
+
+User Prompt (verbatim, secrets redacted):
+okay final questions to explain me , as u r telling a intyerviewr - ground source from codebase 
+write like a human , who is explaining.
+ques1:  what 3 major evaluation criteria u used and why ?
+ques2: how u made deterministic flows ? (used jev here ?)
+ques3: how u maintained reliability and ensure good accuracy ? what u used? pydantic , jev , ocr etc ??
+ques4: expain me 3 most important architecture decision u made and why that come into your mind ?
+
+Agent Response Summary:
+Synthesized an authoritative, human-centric technical explanation structured for the AI interview. Grounded directly in the codebase: (1) detailed the 3 major evaluation criteria (Case Status Fidelity, Step & Phase Invariant Precision, and Temporal Integrity), (2) explained the deterministic control architecture adopting the TypeSafe/JEV philosophy of keeping code in control and scoping AI to narrow structured decisions, (3) detailed reliability mechanisms (Pydantic schema validation, CriticVerifier guardrails, and cached Gemini multimodal OCR), and (4) articulated the three most critical architectural decisions (Decoupled Evidence Graph vs Claims, Multi-Hop Cryptographic Identity Graph, and Schema-Agnostic JSON Column Introspection).
+
+Actions:
+* Synthesized codebase references (workflow.py, evidence_engine.py, schemas.py, critic.py, ocr_extractor.py)
+* Aligned explanations with TypeSafe/JEV philosophy from Jev.md
+* Appended per-turn log entry to log.txt according to AGENTS.md
+
+Context:
+tool=Antigravity IDE
+model=gemini-3-8-flash
+branch=main
+repo_root=R:\hackerrank
+worktree=main
+parent_agent=none
+
+
+
 
 
