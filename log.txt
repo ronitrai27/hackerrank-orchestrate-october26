@@ -357,8 +357,77 @@ Actions:
 
 Context:
 tool=Antigravity IDE
+parent_agent=none
+
+## 2026-10-25T05:05:00Z SESSION START
+
+tool=Antigravity IDE
+model=gemini-3-8-flash
+Repo Root: R:\hackerrank
+Branch: main
+Worktree: main
+Parent Agent: none
+Language: py
+Time Remaining: not configured
+
+## 2026-10-25T05:06:00Z Deep Dive Diagnostics of the 8 Failing Cases (75% to 100%)
+
+User Prompt (verbatim, secrets redacted):
+lets discuss the more improved version to achive 90-100% in reality 
+we have made Decison.md file !!
+@[Decision.md]  read thid , we are at 75% , waht else need to be improved ?
+
+check which cases are failing , undertand why , and then check whast can be issue , if after SHA also we are ast 75% ?
+
+letsideate befoire code !
+
+Agent Response Summary:
+Conducted root-cause analysis across all 8 failing sample cases (cases 03, 07, 10, 16, 21, 22, 26, 32). Discovered the exact semantic root causes: (1) greedy regex/substring user_id matching without word boundaries in service logs generating false phantom records for short IDs like user_43 matching user_437, (2) uninspected JSON columns (record_json) in SQLite snapshots skipping customer_data_read_replica, (3) unhandled 'snapshots' key in JSON customer bundles skipping unredacted account tombstones, (4) unparsed 'contact_query_completed' log event variants, and (5) missing multimodal PDF/PNG scan hook in EvidenceEngine. Outlined the comprehensive ideation plan to reach 95-100% accuracy.
+
+Actions:
+* Executed sample calibration suite via uv run python -m unittest code.src.tests.test_samples
+* Analyzed failure traces for case_03, case_07, case_10, case_16, case_21, case_22, case_26, case_32
+* Inspected SQLite schemas and record_json payloads in customer_data_read_replica_20260921.sql
+* Inspected JSON snapshots in customer_data_snapshot_bundle_20260915.json for account tombstone PII
+* Appended SESSION START and per-turn log entries to log.txt according to AGENTS.md
+
+Context:
+tool=Antigravity IDE
 model=gemini-3-8-flash
 branch=main
 repo_root=R:\hackerrank
 worktree=main
 parent_agent=none
+
+## 2026-10-25T05:23:00Z Architecture Upgraded to 100% Ground Truth Calibration
+
+User Prompt (verbatim, secrets redacted):
+okay now lets fix those 
+#	Proposed fix	Verdict	Main concern
+1	Word-boundary log matcher	Strong candidate	Regex alone will not solve identity correlation or false matches.
+2	SQLite JSON column scanner	Strong candidate	Must recursively inspect valid JSON without matching unrelated users.
+3	Snapshot bundle and tombstone walker	Strong candidate	Must apply the actual tombstone policy, not flag every tombstone.
+4	Generalized log event parser	Strong candidate	Event-name coverage must include the fields that establish identity and outcome.
+5	PDF/PNG OCR integration	Conditional	Only fixes a case if relevant evidence is actually present in an attachment and currently missed.
+6	Evidence-backed COMPLETE steps	Necessary for output parity	Can fix step-level mismatches, but cannot compensate for missing or incorrect evidence.
+
+lets fix this as u have tested and u have evidence , u can do that again for confirmation and now lets fix this properly !!
+
+Agent Response Summary:
+Implemented all 6 architectural improvements across code/src/lib/evidence_engine.py and code/src/app/graph/nodes/plan_builder.py: (1) token-exact and word-boundary user identifier matching to prevent substring collisions, (2) dynamic SQLite JSON column scanning (record_json), (3) snapshot bundle traversal for unredacted account tombstone PII, (4) generalized query/lookup event log handling, (5) multimodal OCR/PDF attachment scanning, and (6) evidence-backed verification step assembly for COMPLETE cases. Re-ran calibration on all 32 sample cases and achieved a perfect 100.0% accuracy (32 / 32 passed) with zero hardcoded shortcuts.
+
+Actions:
+* Rewrote code/src/lib/evidence_engine.py with the 6 core architectural fixes
+* Updated code/src/app/graph/nodes/plan_builder.py to preserve evidence-backed verification steps
+* Ran calibration test suite via uv run python -m unittest code.src.tests.test_samples (32/32 Passed - 100.0%)
+* Updated Decision.md to document the 100.0% calibration milestone
+* Appended per-turn log entry to log.txt according to AGENTS.md
+
+Context:
+tool=Antigravity IDE
+model=gemini-3-8-flash
+branch=main
+repo_root=R:\hackerrank
+worktree=main
+parent_agent=none
+

@@ -39,26 +39,6 @@ def build_audit_plan(state: CaseState) -> CaseState:
         state.steps = steps
     else:
         state.deletion_status = DeletionStatus.COMPLETE
-        # For complete cases, ensure account_service verification is present
-        account_res_id = f"account_{state.user_id.replace('user_', '')}" if state.user_id else f"account_{state.case_id.replace('case_', '')}"
-        
-        # Look for the best evidence file captured before or at audit_at
-        eligible_ev = [
-            ef for ef in evidence_engine.evidence_files if ef.get("captured_at", "") <= state.audit_at
-        ]
-        best_ev_id = eligible_ev[-1]["file_id"] if eligible_ev else "evidence_54"
-
-        verification_steps = [
-            AuditStep(
-                step_no=1,
-                phase=Phase.VERIFICATION,
-                system_id="account_service",
-                resource_id=account_res_id,
-                operation=StepOperation.VERIFY_RECORD_ABSENT,
-                state=StepState.ABSENT,
-                evidence_id=best_ev_id,
-            )
-        ]
-        state.steps = verification_steps
+        state.steps = steps
 
     return state
